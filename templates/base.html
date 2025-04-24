@@ -1,0 +1,27 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>BRISA IoT</title>
+    <link rel="icon" href="{{ url_for('static', filename='img/ico/favicon.ico') }}" type="image/x-icon">
+    <link rel="stylesheet" href="static/css/style_sensors.css">
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/chartjs-plugin-zoom"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/socket.io/4.4.1/socket.io.js"></script>
+</head>
+<body>
+    <div class="sidebar">
+        <!-- Logo -->
+        <div class="logo">
+            <img src="{{ url_for('static', filename='img/svg/logo.svg') }}" alt="Logo" width="100%">
+        </div>
+        <a href="home">🏠 Home</a>
+        <a href="monitoring">📊 Monitoring</a>
+        <a href="upload">📤 Update Firmware</a>
+    </div>    
+
+    {% block content %}
+    {% endblock %}    
+</body>
+</html>

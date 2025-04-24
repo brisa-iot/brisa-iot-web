@@ -1,0 +1,25 @@
+<div class="content">
+    <div class="sensor-cards" id="sensor-cards-container">
+        <!-- Sensor cards will be dynamically added here -->
+    </div>
+
+    <!-- Modal Structure -->
+    <div id="sensorModal" class="modal">
+        <div class="modal-content">
+            <!-- Botón de Cerrar (X) -->
+            <span id="close-modal-x" class="close-btn">&times;</span>
+            
+            <h4>Datos históricos de <span id="sensor-title"></span></h4>
+            <div class="date-range">
+                <label for="startDate">Fecha de inicio:</label>
+                <input type="date" id="startDate">
+                <label for="endDate">Fecha de fin:</label>
+                <input type="date" id="endDate">
+                <button id="load-history">Cargar Datos</button>
+            </div>
+            <canvas id="history-chart"></canvas>
+        </div>
+    </div>
+        
+    <script src="static/js/app.js"></script>
+</div>
