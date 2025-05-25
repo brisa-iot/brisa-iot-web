@@ -1,30 +1,25 @@
+from flask_socketio import SocketIO 
 from flask import Flask, render_template, request, jsonify
-from flask_socketio import SocketIO
-from firebase_admin import credentials, firestore, db, initialize_app
-from google.cloud.firestore import FieldFilter
-from datetime import datetime
+from utils import DBManager, MQTTConnector
+from param import (CREDENTIALS_PATH, DATABASE_URL, BROKER_ADDRESS, BROKER_PORT,
+                  CLIENT_ID, CONTROL_TOPIC, SENSORS_TOPIC)
 
 
 app = Flask(__name__)
 socketio = SocketIO(app, cors_allowed_origins="*")
 
-# Configurar Firebase
-cred = credentials.Certificate("data/firebase_credentials.json")  # Asegúrate de tener este archivo
-initialize_app(cred, {
-    "databaseURL": "https://brisa-iot-default-rtdb.firebaseio.com/"  # Reemplaza con tu URL de Realtime Database
-})
+db_manager = DBManager(CREDENTIALS_PATH, DATABASE_URL)
+mqtt_connector = MQTTConnector(BROKER_ADDRESS, BROKER_PORT, CLIENT_ID)
+mqtt_connector.db_manager = db_manager
+mqtt_connector.socketio = socketio
+mqtt_connector.connect()
+mqtt_connector.subscribe(SENSORS_TOPIC)
 
-# Conectar a Firestore y Realtime Database
-firestore_db = firestore.client()
-realtime_db = db.reference("sensors")  # Nodo en Realtime Database
-
-subscribed_sensors = set()  # Track which sensors have subscriptions
 
 @app.route("/")
 @app.route("/home")
 def home():
     return render_template("home.html")
-
 
 @app.route("/monitoring")
 def index():
@@ -39,28 +34,8 @@ def get_sensor_history(sensor):
     if not start or not end:
         return jsonify({'error': 'Start and end date are required'}), 400
 
-    # Convert the start and end dates to Firestore Timestamp objects
-    start_date = datetime.strptime(start, '%Y-%m-%d').timestamp()
-    # round end_date to the next day
-    end_date = datetime.strptime(end, '%Y-%m-%d').timestamp() + 86400  # Add 24 hours in seconds
+    data = db_manager.get_sensor_data_from_db(sensor, start, end)
 
-    # Query the Firestore collection for the sensor history within the date range
-    docs = (
-        firestore_db.collection("sensors")
-        .where(filter=FieldFilter("sensor", "==", sensor))
-        .where(filter=FieldFilter("timestamp", ">=", start_date))
-        .where(filter=FieldFilter("timestamp", "<=", end_date))
-        .order_by("timestamp", direction=firestore.Query.ASCENDING)
-        .stream()
-    )
-
-    data = []
-    for doc in docs:
-        history_entry = doc.to_dict()
-        data.append({
-            'timestamp': history_entry['timestamp'],
-            'value': history_entry['value']
-        })
     if not data:
         return jsonify({'message': 'No data found for the given date range'}), 404
 
@@ -69,38 +44,20 @@ def get_sensor_history(sensor):
 @socketio.on("connect")
 def handle_connect():
     print("Cliente conectado")
-    # Escuchar cambios en tiempo real desde Firebase Realtime Database
-    def stream_handler(event):
-        data = event.data
-        # Eliminar campos no suscritos
-        if data and isinstance(data, dict):
-            for sensor_id in list(data.keys()):
-                if sensor_id not in subscribed_sensors:
-                    del data[sensor_id]
-        if data:
-            # Enviar datos a través de WebSocket
-            socketio.emit("sensor_update", data)
-    realtime_db.listen(stream_handler)
 
 @app.route("/api/sensors")
 def get_sensor_data():
     """Returns the latest sensor values from Realtime Database"""
-    sensors = realtime_db.get()
+    sensors = db_manager.get_last_sensor_data()
     if sensors:
         return jsonify(sensors)
     return jsonify({"status": "No data available"})
 
-@app.route("/api/subscribe/<sensor_id>", methods=["POST"])
-def subscribe_sensor(sensor_id):
-    """Adds a sensor to the subscription list"""
-    subscribed_sensors.add(sensor_id)
-    return {"status": f"Subscribed to {sensor_id}"}
-
-@app.route("/api/unsubscribe/<sensor_id>", methods=["POST"])
-def unsubscribe_sensor(sensor_id):
-    """Removes a sensor from the subscription list"""
-    subscribed_sensors.discard(sensor_id)
-    return {"status": f"Unsubscribed from {sensor_id}"}
 
 if __name__ == "__main__":
-    socketio.run(app, debug=True, host="0.0.0.0", port=5000)
+    try:
+        mqtt_connector.loop()
+        socketio.run(app, debug=False, host="0.0.0.0", port=5000)
+    except KeyboardInterrupt:
+        print("Exiting...")
+        mqtt_connector.close()

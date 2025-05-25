@@ -61,12 +61,6 @@ window.onload = () => {
                     <p class="unit">${units[sensor]}</p>
                 </div>
             </div>
-            <div class="switch-container">
-                <label class="switch">
-                    <input type="checkbox" id="${sensor}-switch" onchange="toggleSubscription('${sensor}')">
-                    <span class="slider"></span>
-                </label>
-            </div>
         `;
 
         container.appendChild(card);
@@ -114,23 +108,6 @@ function fetchSensorData() {
                 }
             });
         });
-}
-
-// Toggle subscription for sensor updates
-function toggleSubscription(sensorId) {
-    const switchElement = document.getElementById(`${sensorId}-switch`);
-    
-    if (switchElement.checked) {
-        fetch(`/api/subscribe/${sensorId}`, { method: 'POST' })
-            .then(response => response.json())
-            .then(data => console.log(data.status))
-            .catch(error => console.error('Subscription error:', error));
-    } else {
-        fetch(`/api/unsubscribe/${sensorId}`, { method: 'POST' })
-            .then(response => response.json())
-            .then(data => console.log(data.status))
-            .catch(error => console.error('Unsubscription error:', error));
-    }
 }
 
 // WebSocket listener for sensor updates
