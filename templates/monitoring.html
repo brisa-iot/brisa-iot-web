@@ -1,5 +1,9 @@
 {% extends "base.html" %}
 {% include "header.html" %}
 {% block content %}
-    {% include "sensors.html" %}
+    <div class="content">
+        <div id="map" style="height: 90%;"></div>
+    </div>
+
+    <script src="static/js/monitoring.js"></script>
 {% endblock %}

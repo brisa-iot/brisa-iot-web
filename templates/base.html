@@ -9,6 +9,11 @@
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/chartjs-plugin-zoom"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/socket.io/4.4.1/socket.io.js"></script>
+    <!-- CSS de Leaflet -->
+    <link rel="stylesheet" href="https://unpkg.com/leaflet/dist/leaflet.css" />
+    <!-- JS de Leaflet -->
+    <script src="https://unpkg.com/leaflet/dist/leaflet.js"></script>
+
 </head>
 <body>
     <div class="sidebar">
@@ -18,7 +23,7 @@
         </div>
         <a href="home">🏠 Home</a>
         <a href="monitoring">📊 Monitoring</a>
-        <a href="upload">📤 Update Firmware</a>
+        <a href="update">📤 Update Parameters</a>
     </div>    
 
     {% block content %}

@@ -1,49 +1,54 @@
-/* Style for real time data */
+/* "Ocean Depths & Digital Brights" Palette - Main Page Dark, Sensor Cards Light */
+
 html, body {
     font-family: Arial, sans-serif;
-    background-color: #f4f4f4;
+    background-color: #2A3B47; /* Deep Ocean Blue - Main Background (Still Dark) */
+    color: #E0E0E0; /* Seafoam - Default Text Color for dark backgrounds */
     margin: 0;
     padding: 0;
     width: 100%;
+    overflow-x: hidden;
 }
 
 .logo {
     width: 100px;
     height: auto;
     padding: 20px;
-    /* invierte colores */
-    filter: invert(1);
+    filter: invert(1); /* Assumes original logo is dark, makes it light for dark header */
 }
+
 .sensor-cards {
     display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); /* Adaptable */
-    grid-template-columns: repeat(5, 1fr); /* Máximo 5 por fila */
+    grid-template-columns: repeat(5, 1fr);
     gap: 20px;
     justify-content: center;
     padding: 20px;
 }
 
-
+/* --- Sensor Card Styles - Updated to Light Theme --- */
 .sensor-card {
-    background-color: #fff;
+    background-color: #FFFFFF; /* White Background for card */
+    color: #333333; /* Default Dark Grey Text for card content */
     border-radius: 10px;
-    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
-    width: 90%; /* Asegura que las tarjetas se ajusten */
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1); /* Standard light-theme shadow */
+    /* border: 1px solid #EAEAEA; */ /* Optional: very light border */
+    width: 90%;
     padding: 20px;
     text-align: center;
     display: flex;
     flex-direction: column;
     align-items: center;
+    transition: background-color 0.3s ease, transform 0.3s ease, box-shadow 0.3s ease;
 }
 
 .sensor-card:hover {
-    background-color: #eaeaea;
+    background-color: #F8F8F8; /* Slightly off-white hover for card */
     cursor: pointer;
     transform: scale(1.02);
-    transition: background-color 0.3s ease, transform 0.3s ease;
+    box-shadow: 0 6px 10px rgba(0, 0, 0, 0.15); /* Enhanced shadow on hover */
 }
 
-.sensor-icon {
+.sensor-icon { /* Container for the icon */
     width: 100%;
     display: flex;
     flex-direction: column;
@@ -51,26 +56,35 @@ html, body {
     cursor: pointer;
 }
 
-.icon {
+.icon { /* The <img> tag for the SVG icon */
     width: 50px;
     height: 50px;
+    /* REMOVED: filter: invert(1) brightness(0.88); */
+    /* This assumes your original SVG icons are black. */
+    /* If SVGs use "currentColor" for fill, add: color: #333333; */
 }
 
-.sensor-info h3 {
+.sensor-info h3 { /* e.g., "Conductivity" */
     font-size: 18px;
     margin: 10px 0;
+    color: #333333; /* Dark Grey Text (e.g., black) */
 }
 
+/* Styles for "Loading..." text and the actual sensor value */
 .value {
     font-size: 24px;
     font-weight: bold;
+    color: #333333; /* Dark Grey Text (e.g., black) */
+    min-height: 30px; /* To prevent layout shift when "Loading..." changes to value */
 }
 
-.unit {
+.unit { /* e.g., "µS/cm" */
     font-size: 14px;
-    color: gray;
+    color: #555555; /* Medium-Dark Grey for units */
 }
+/* --- End of Sensor Card Light Theme Styles --- */
 
+/* Switch Styles (remains consistent with the dark theme palette for now, adjust if needed) */
 .switch {
     position: relative;
     display: inline-block;
@@ -92,7 +106,7 @@ html, body {
     left: 0;
     right: 0;
     bottom: 0;
-    background-color: #ccc;
+    background-color: #455A64; /* Tidal Line - Off-state of slider */
     transition: 0.4s;
     border-radius: 50px;
 }
@@ -105,21 +119,21 @@ html, body {
     border-radius: 50px;
     left: 4px;
     bottom: 4px;
-    background-color: white;
+    background-color: #E0E0E0; /* Seafoam - Slider knob */
     transition: 0.4s;
 }
 
 input:checked + .slider {
-    background-color: #4CAF50;
+    background-color: #4BC0C0; /* Aqua Current - On-state of slider */
 }
 
 input:checked + .slider:before {
     transform: translateX(14px);
 }
 
-/* Ocultar el modal inicialmente con opacidad y escala */
+/* Modal Styles (remains Dark Theme) */
 .modal {
-    display: flex; /* Cambiar a flex para la animación */
+    display: flex;
     justify-content: center;
     align-items: center;
     position: fixed;
@@ -127,140 +141,182 @@ input:checked + .slider:before {
     left: 0;
     width: 100%;
     height: 100%;
-    background-color: rgba(0, 0, 0, 0.5);
+    background-color: rgba(0, 0, 0, 0.7);
     z-index: 999;
     overflow: auto;
     opacity: 0;
     transform: scale(0.9);
     visibility: hidden;
-    /* transition: opacity 0.3s ease, transform 0.3s ease, visibility 0.3s; */
 }
 
-/* Cuando el modal está activo */
 .modal.show {
     opacity: 1;
     transform: scale(1);
     visibility: visible;
 }
 
-/* Animación para el contenido del modal */
 .modal-content {
-    background-color: #2c3e50;
+    background-color: #34495E; /* Abyssal Plain - Modal Content Background (Dark) */
+    color: #E0E0E0; /* Seafoam - Text color for modal content (Light) */
     padding: 20px;
     border-radius: 10px;
+    border: 1px solid #455A64; /* Tidal Line - border for modal content */
     width: 90%;
     height: 90%;
     transition: opacity 1s ease, transform 1s ease, visibility 1s;
     transform: translateY(-20px);
+    display: flex;
+    flex-direction: column;
 }
 
 .modal.show .modal-content {
     transform: translateY(0);
 }
 
-/* Botón de Cerrar (X) */
 .close-btn {
     position: absolute;
-    top: 10px;
-    right: 15px;
-    font-size: 30px;
-    color: #333;
+    top: 15px;
+    right: 25px;
+    font-size: 24px;
+    color: #E0E0E0; /* Seafoam (Light text for dark modal) */
     cursor: pointer;
     background: none;
     border: none;
     font-weight: bold;
+    padding: 5px;
 }
 
 .close-btn:hover {
-    color: red;
+    color: #F06292; /* Deep Sea Coral - Accent for close hover */
 }
 
-h4 {
-    font-size: 24px;
+h4 { /* Modal Title / other headings in dark sections */
+    font-size: 22px;
+    margin-top: 0;
     margin-bottom: 20px;
+    color: #E0E0E0; /* Seafoam (Light text for dark modal) */
+    border-bottom: 1px solid #455A64; /* Tidal Line - subtle separator */
+    padding-bottom: 10px;
 }
 
-/* Estilo para los inputs y botones dentro del modal */
 .date-range {
     margin-bottom: 20px;
 }
 
-button {
+.date-range input[type="date"] {
+    background-color: #2A3B47; /* Deep Ocean Blue */
+    color: #E0E0E0; /* Seafoam */
+    border: 1px solid #455A64; /* Tidal Line */
+    padding: 8px;
+    border-radius: 4px;
+    margin: 0 5px;
+}
+
+/* Buttons (e.g. "Cargar Datos" - keep primary accent color) */
+button, input[type="button"], input[type="submit"] {
     padding: 10px 20px;
-    background-color: #4CAF50;
-    color: white;
+    background-color: #4BC0C0; /* Aqua Current - Primary Accent */
+    color: #232F34; /* Dark text for contrast on Aqua Current button */
     border: none;
     border-radius: 5px;
     cursor: pointer;
     font-size: 16px;
+    font-weight: bold;
+    transition: background-color 0.3s ease;
 }
 
-button:hover {
-    background-color: #45a049;
+button:hover, input[type="button"]:hover, input[type="submit"]:hover {
+    background-color: #3DAAAA; /* Darker Aqua Current */
 }
 
-/* Ajuste para el canvas del gráfico */
 #history-chart {
-    width: 100% !important; /* Asegura que el gráfico ocupe todo el espacio disponible */
-    height: auto !important; /* Asegura que el gráfico se ajuste a la altura del contenedor */
-    max-height: 85%;
+    width: 100% !important;
+    flex-grow: 1;
+    min-height: 300px;
+    max-height: calc(100% - 100px);
+    /* Chart line color is set in JS: borderColor: 'rgba(75, 192, 192, 1)' (#4BC0C0) */
+    /* Axis and legend colors should be set in Chart.js options to #E0E0E0 for dark modal */
 }
 
-/* Estilo para el encabezado del sitio */
+/* Site Header (remains Dark Theme) */
 .site-header {
-    background-color: #2c3e50;
-    padding: 20px;
+    background-color: #232F34;
+    padding: 15px 20px;
     text-align: center;
-    color: white;
-    /* border-radius: 10px; */
-    /* margin-bottom: 20px; */
-    /* Sombra izquierda */
-    box-shadow: 2px 0 5px rgba(0, 0, 0, 0.2);
-    width: 100%; /* Asegura que el encabezado ocupe todo el ancho menos 200p*/
-
+    color: #E0E0E0; /* Seafoam */
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.3);
+    width: 100%;
+    box-sizing: border-box;
 }
 
 .site-title {
-    font-size: 28px;
+    font-size: 26px;
     margin: 0;
     font-weight: bold;
 }
 
-/* Estilos del Menú Lateral */
+/* Sidebar Styles (remains Dark Theme) */
 .sidebar {
     position: fixed;
-    padding: 20px;
     left: 0;
     top: 0;
-    width: 10%; /* Ancho del menú lateral */
+    width: 12%;
     height: 100%;
-    background-color: #2c3e50;
+    background-color: #232F34;
     padding-top: 20px;
     display: flex;
     flex-direction: column;
     align-items: center;
-    box-shadow: 2px 0 5px rgba(0, 0, 0, 0.2);
+    box-shadow: 2px 0 5px rgba(0, 0, 0, 0.3);
+    box-sizing: border-box;
 }
 
 .sidebar a {
     display: block;
-    color: white;
+    color: #E0E0E0; /* Seafoam */
     text-decoration: none;
-    font-size: 18px;
-    padding: 20px;
+    font-size: 17px;
+    padding: 15px 20px;
     width: 100%;
     text-align: left;
-    transition: background 0.3s;
+    transition: background-color 0.3s ease, color 0.3s ease;
+    box-sizing: border-box;
 }
 
 .sidebar a:hover {
-    background-color: #1a252f;
+    background-color: #1B2528;
+    color: #4BC0C0; /* Aqua Current - Highlight text on hover */
 }
 
-/* Ajuste del contenido para que no quede oculto por el menú */
 .content {
-    margin-left: calc(10% + 40px); /* Debe coincidir con el ancho del sidebar */
-    max-width: calc(100% - 220px); /* Evita que el contenido se desborde */
+    margin-left: calc(12% + 20px);
     padding: 20px;
     transition: margin-left 0.3s ease-in-out;
+    box-sizing: border-box;
+    /* Text color in general .content area will be Seafoam from body, unless overridden */
 }
+
+/* Chart.js Axis/Legend Colors (Reminder for JS configuration) */
+/*
+It's best to set these in Chart.js options in your JavaScript for the modal chart:
+options: {
+    // ... other options
+    scales: {
+        x: {
+            title: { display: true, text: 'Fecha', color: '#E0E0E0' }, // Light text for dark modal
+            ticks: { color: '#E0E0E0' }, // Light text
+            grid: { color: '#455A64' } // Tidal Line - Grid line color for dark modal
+        },
+        y: {
+            title: { display: true, text: units[sensor], color: '#E0E0E0' }, // Light text
+            ticks: { color: '#E0E0E0' }, // Light text
+            grid: { color: '#455A64' } // Tidal Line - Grid line color
+        }
+    },
+    plugins: {
+        legend: {
+            labels: { color: '#E0E0E0' } // Light text
+        }
+    }
+}
+*/

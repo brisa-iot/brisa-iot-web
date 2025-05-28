@@ -1,12 +1,15 @@
+console.log('Loading sensors.js');
+
+let nodeId = null; // Variable to store the current node ID
+
 const socket = io.connect('http://localhost:5000');
 
 const sensors = [
     "conductivity",
-    // "wind_direction",
     "gps",
     "humidity",
     "imu", 
-    "wind_magnitude",
+    "wind",
     "oxygen",
     "pH",
     "pressure",
@@ -16,11 +19,10 @@ const sensors = [
 
 const titles = {
     "conductivity": "Conductivity",
-    "wind_direction": "Wind Direction",
     "gps": "GPS",
     "humidity": "Humidity",
     "imu": "IMU",
-    "wind_magnitude": "Wind Magnitude",
+    "wind": "Wind",
     "oxygen": "Oxygen",
     "pH": "pH Level",
     "pressure": "Pressure",
@@ -31,9 +33,12 @@ const titles = {
 const units = {
     "conductivity": "µS/cm",
     "wind_direction": "°",
-    "gps": "Latitude/Longitude",
+    "gps_lat": "Latitude",
+    "gps_lon": "Longitude",
     "humidity": "%",
-    "imu": "m/s²",
+    "imu_ax": "m/s²",
+    "imu_ay": "m/s²",
+    "imu_az": "m/s²",
     "wind_magnitude": "m/s",
     "oxygen": "mg/L",
     "pH": "pH",
@@ -46,14 +51,24 @@ const units = {
 window.onload = () => {
     const container = document.getElementById('sensor-cards-container');
 
+    const groupedSensors = {
+        gps: ['gps_lat', 'gps_lon'],
+        imu: ['imu_ax', 'imu_ay', 'imu_az'],
+        wind: ['wind_direction', 'wind_magnitude']
+    };
+
     sensors.forEach(sensor => {
+        if (["gps", "imu", "wind"].includes(sensor)) {
+            return; // Skip grouped sensors
+        }
+
         const card = document.createElement('div');
         card.classList.add('sensor-card');
         card.id = `${sensor}-card`;
-        // card.onclick = () => showModal(sensor);
+        card.onclick = () => showModal(sensor);
 
         card.innerHTML = `
-            <div class="sensor-icon" onclick="showModal('${sensor}')">
+            <div class="sensor-icon">
                 <img src="static/img/svg/${sensor}.svg" class="icon" alt="${sensor} Icon">
                 <div class="sensor-info">
                     <h3>${titles[sensor]}</h3>
@@ -66,46 +81,46 @@ window.onload = () => {
         container.appendChild(card);
     });
 
-    fetchSensorData();
-};
+    // Create grouped cards
+    Object.keys(groupedSensors).forEach(group => {
+        const card = document.createElement('div');
+        card.classList.add('sensor-card');
+        card.id = `${group}-card`;
+        card.onclick = () => showModal(group);
 
+        card.innerHTML = `
+            <div class="sensor-icon">
+                <img src="static/img/svg/${group}.svg" class="icon" alt="${group} Icon">
+                <div class="sensor-info">
+                    <h3>${titles[group]}</h3>
+                    <p class="value">
+                        ${groupedSensors[group].map(sensor => `
+                            <span id="${sensor}-value">Loading...</span> <span class="unit">${units[sensor]}</span>
+                        `).join(' | ')}
+                    </p>
+                </div>
+            </div>
+        `;
 
-// Unsubscribe from all sensors when the page is closed or refreshed
-window.onbeforeunload = () => {
-    sensors.forEach(sensor => {
-        const url = `/api/unsubscribe/${sensor}`;
-        const data = JSON.stringify({ sensor });
-        navigator.sendBeacon(url, data);
+        container.appendChild(card);
     });
-};
 
-window.addEventListener("unload", () => {
-    sensors.forEach(sensor => {
-        const url = `/api/unsubscribe/${sensor}`;
-        const data = JSON.stringify({ sensor });
-        navigator.sendBeacon(url, data);
-    });
-});
+    console.log('Initializing sensor cards...');
+    fetchInitialSensorData();
+};
 
 // Fetch initial sensor data
-function fetchSensorData() {
+function fetchInitialSensorData() {
+    console.log('Fetching initial sensor data...');
     fetch('/api/sensors')
         .then(response => response.json())
         .then(data => {
-            sensors.forEach(sensor => {
-                const valueElement = document.getElementById(`${sensor}-value`);
-                if (data[sensor]) {
-                    if (sensor === 'gps') {
-                        valueElement.innerText = `Lat: ${data[sensor].lat}, Lon: ${data[sensor].lon}`;
-                    }
-                    else if (sensor === 'imu') {
-                        valueElement.innerText = `X: ${data[sensor].ax}, Y: ${data[sensor].ay}, Z: ${data[sensor].az}`;
-                    } else {
-                        valueElement.innerText = `${data[sensor]}`;
-                    }
-                } else {
-                    valueElement.innerText = 'N/A';
-                }
+            console.log('Initial sensor data received:', data);
+            nodeId = data.node_id; // Store the node ID
+            data.sensors.forEach(sensor => {
+                console.log(`Sensor: ${sensor.sensor}, Value: ${sensor.value}`);
+                const valueElement = document.getElementById(`${sensor.sensor}-value`);
+                valueElement.innerText = `${sensor.value}`;
             });
         });
 }
@@ -113,20 +128,11 @@ function fetchSensorData() {
 // WebSocket listener for sensor updates
 socket.on('sensor_update', (data) => {
     console.log('Sensor update received:', data);
-    for (const [sensor, value] of Object.entries(data)) {
-        const valueElement = document.getElementById(`${sensor}-value`);
-        if (valueElement) {
-            valueElement.innerText = value;
-            if (sensor === 'gps') {
-                valueElement.innerText = `Lat: ${data[sensor].lat}, Lon: ${data[sensor].lon}`;
-            }
-            else if (sensor === 'imu') {
-                valueElement.innerText = `X: ${data[sensor].ax}, Y: ${data[sensor].ay}, Z: ${data[sensor].az}`;
-            } else {
-                valueElement.innerText = `${data[sensor]}`;
-            }
-        }
-    }
+    if (nodeId == data.node_id) {
+        const valueElement = document.getElementById(`${data.sensor}-value`);
+        valueElement.innerText = `${data.value}`;
+        
+    }    
 });
 
 
@@ -151,7 +157,7 @@ function showModal(sensor) {
             .then(response => response.json())
             .then(data => {
                 if (Array.isArray(data) && data.length > 0) {
-                    const timestamps = data.map(d => new Date(d.timestamp).toLocaleString());
+                    const timestamps = data.map(d => new Date(d.time).toLocaleString());
                     const values = data.map(d => d.value);
 
                     // Verificar si ya existe un gráfico en el canvas y destruirlo
@@ -177,14 +183,25 @@ function showModal(sensor) {
                                 x: {
                                     title: {
                                         display: true,
-                                        text: 'Fecha'
-                                    }
+                                        text: 'Fecha',
+                                        color: '#E0E0E0'
+                                    },
+                                    ticks: { color: '#E0E0E0' },
+                                    grid: { color: '#455A64' }
                                 },
                                 y: {
                                     title: {
                                         display: true,
-                                        text: units[sensor]
-                                    }
+                                        text: units[sensor],
+                                        color: '#E0E0E0'
+                                    },
+                                    ticks: { color: '#E0E0E0' },
+                                    grid: { color: '#455A64' }
+                                }
+                            },
+                            plugins: {
+                                legend: {
+                                    labels: { color: '#E0E0E0' }
                                 }
                             }
                         }

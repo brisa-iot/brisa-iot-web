@@ -1,0 +1,136 @@
+/*
+    Assuming base.html and header.html handle:
+    - Overall page background (e.g., #2A3B47 as per "Ocean Depths" palette)
+    - Font loading (Arial, or Inter if preferred by base)
+    - Tailwind CSS loading (though some specific styles are overridden here)
+    - Layout of the .content div relative to a sidebar
+*/
+
+/* Styles for the form container, styled as a dark card */
+.container { 
+    font-family: Arial, sans-serif; /* Font from the provided style */
+    background-color: #34495E; /* Abyssal Plain - Dark container background */
+    color: #E0E0E0; /* Seafoam - Default light text for the card */
+    border-radius: 10px; /* Rounded corners */
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.2); /* Slightly more pronounced shadow for dark on dark */
+    width: 100%;
+    max-width: 1500px; 
+    padding: 2rem; /* Tailwind p-8 */
+    margin: 2rem auto; /* Center the container and add some top/bottom margin */
+}
+
+.form-label {
+    display: block;
+    margin-bottom: 0.5rem; /* Tailwind mb-2 */
+    font-weight: 500; /* Tailwind font-medium */
+    color: #E0E0E0; /* Seafoam - Light text for labels */
+}
+
+.form-input, .form-textarea, .form-file {
+    font-family: Arial, sans-serif; /* Ensure inputs also use Arial */
+    width: 100%;
+    padding: 0.75rem; /* Tailwind p-3 */
+    border: 1px solid #455A64; /* Tidal Line - Border for inputs */
+    border-radius: 5px; /* Consistent with button radius */
+    background-color: #2A3B47; /* Deep Ocean Blue - Input background */
+    color: #E0E0E0; /* Seafoam - Input text color */
+    box-shadow: inset 0 1px 2px 0 rgba(0, 0, 0, 0.1);
+    margin-bottom: 1rem; /* Tailwind mb-4 */
+    transition: border-color 0.3s ease, box-shadow 0.3s ease;
+}
+
+.form-input:focus, .form-textarea:focus, .form-file:focus {
+    outline: none;
+    border-color: #4BC0C0; /* Aqua Current - Accent for focus */
+    box-shadow: 0 0 0 3px rgba(75, 192, 192, 0.3); 
+}
+
+.form-textarea {
+    min-height: 150px;
+    resize: vertical;
+}
+
+.form-file::file-selector-button {
+    font-family: Arial, sans-serif;
+    background-color: #4BC0C0; /* Aqua Current */
+    color: #232F34; /* Dark text for contrast */
+    border: none;
+    padding: 0.5rem 1rem; /* Tailwind px-4 py-2 */
+    border-radius: 5px; /* Consistent radius */
+    font-weight: bold; /* Match button style */
+    cursor: pointer;
+    margin-right: 0.75rem; /* Tailwind mr-3 */
+    transition: background-color 0.3s ease;
+}
+.form-file::file-selector-button:hover {
+    background-color: #3DAAAA; /* Darker Aqua Current */
+}
+
+.form-radio-group {
+    margin-bottom: 1.5rem; /* Tailwind mb-6 */
+}
+.form-radio-label {
+    margin-right: 1.5rem; /* Tailwind mr-6 */
+    color: #E0E0E0; /* Seafoam - Light text */
+    cursor: pointer;
+    display: inline-flex; 
+    align-items: center; 
+}
+.form-radio-input {
+    margin-right: 0.5rem; /* Tailwind mr-2 */
+    accent-color: #4BC0C0; /* Aqua Current - Radio button accent */
+    cursor: pointer;
+    width: 1em; 
+    height: 1em; 
+    /* For better visibility on dark backgrounds if accent-color is not enough */
+    border: 1px solid #455A64;
+    background-color: #2A3B47;
+}
+    .form-radio-input:checked {
+    background-color: #4BC0C0; /* Fill with accent color when checked */
+}
+
+
+.btn-submit {
+    font-family: Arial, sans-serif;
+    background-color: #4BC0C0; /* Aqua Current - Primary Accent */
+    color: #232F34; /* Dark text for contrast */
+    padding: 10px 20px; /* From provided button style */
+    border: none;
+    border-radius: 5px; /* From provided button style */
+    font-size: 16px; /* From provided button style */
+    font-weight: bold; /* From provided button style */
+    cursor: pointer;
+    transition: background-color 0.3s ease;
+    width: 100%; 
+}
+.btn-submit:hover {
+    background-color: #3DAAAA; /* Darker Aqua Current */
+}
+
+.message {
+    margin-top: 1.5rem; /* Tailwind mt-6 */
+    padding: 1rem; /* Tailwind p-4 */
+    border-radius: 5px; /* Consistent radius */
+    text-align: center;
+    font-weight: 500; /* Tailwind font-medium */
+}
+.message-success {
+    background-color: rgba(75, 192, 192, 0.15); /* Light Aqua Current background for success */
+    color: #4BC0C0; /* Aqua Current text for success */
+    border: 1px solid #4BC0C0; 
+}
+.message-error {
+    background-color: rgba(240, 98, 146, 0.15); /* Light Deep Sea Coral background for error */
+    color: #F06292; /* Deep Sea Coral text for error */
+    border: 1px solid #F06292; 
+}
+
+/* H1 style for the title within the form container */
+.container h1.page-title { 
+    font-family: Arial, sans-serif; /* Ensure title also uses Arial */
+    color: #E0E0E0; /* Seafoam - Light text for title */
+    border-bottom: 1px solid #455A64; /* Tidal Line - subtle separator for dark theme */
+    padding-bottom: 0.75rem; /* Tailwind pb-3 */
+    font-size: 22px; /* Similar to h4 in provided styles */
+}

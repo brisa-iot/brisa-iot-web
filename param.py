@@ -1,10 +1,12 @@
 import os
 import json
 
-CREDENTIALS_PATH = os.path.join("data", "firebase_credentials.json")
-DATABASE_URL = ""
-with open(os.path.join("data", "firebase_url.json"), "r") as file:
-    DATABASE_URL = json.load(file)
+
+DB_HOST = "localhost"
+DB_PORT = 8086
+DB_USERNAME = "admin"
+DB_PASSWORD = "admin"
+DB_NAME = "sensors_db"
 
 BROKER_ADDRESS = "localhost"
 BROKER_PORT = 1883

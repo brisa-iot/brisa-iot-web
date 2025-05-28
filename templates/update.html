@@ -1,0 +1,48 @@
+{% extends "base.html" %}
+{% include "header.html" %}
+
+{% block content %}
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/style_update.css') }}">
+
+    <div class="content">
+        <div class="container">
+            <h1 class="page-title text-2xl font-bold mb-6 text-center">Update Parameters</h1>
+
+            <form id="configForm" action="{{ url_for('update_config_route') }}" method="post" enctype="multipart/form-data">
+                <div class="form-radio-group">
+                    <span class="form-label">Choose input method:</span>
+                    <div class="mt-2 space-y-2 sm:space-y-0 sm:flex sm:space-x-4">
+                        <label for="inputTypeFile" class="form-radio-label">
+                            <input type="radio" id="inputTypeFile" name="inputType" value="file" class="form-radio-input" checked>
+                            Upload JSON File
+                        </label>
+                        <label for="inputTypeText" class="form-radio-label">
+                            <input type="radio" id="inputTypeText" name="inputType" value="text" class="form-radio-input">
+                            Enter JSON Text
+                        </label>
+                    </div>
+                </div>
+
+                <div id="fileUploadSection">
+                    <label for="file" class="form-label">Select JSON file to upload:</label>
+                    <input type="file" id="file" name="file" accept=".json" class="form-file">
+                </div>
+
+                <div id="textInputSection" style="display: none;">
+                    <label for="jsonText" class="form-label">Enter JSON content:</label>
+                    <textarea id="jsonText" name="jsonText" class="form-textarea" placeholder='{\n  "key": "value",\n  "setting": true,\n  "threshold": 123.45\n}'></textarea>
+                </div>
+
+                <button type="submit" class="btn-submit mt-6">Upload Configuration</button>
+            </form>
+
+            {% if message %}
+                <div class="message {% if success %}message-success{% else %}message-error{% endif %}">
+                    <p>{{ message }}</p>
+                </div>
+            {% endif %}
+        </div>
+    </div>
+    
+    <script src="{{ url_for('static', filename='js/update.js') }}"></script>
+{% endblock %}
