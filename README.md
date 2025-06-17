@@ -37,7 +37,7 @@ This allows you to configure the app using environment variables in your Docker 
 
 ### 2. Build and Run with Docker Compose
 
-Edit [`docker-compose.yml`](docker-compose.yml) and set the environment variables to match your external InfluxDB and MQTT broker addresses and credentials.
+Edit [`docker-compose.yaml`](docker-compose.yaml) and set the environment variables to match your external InfluxDB and MQTT broker addresses and credentials.
 
 Example:
 
@@ -45,19 +45,25 @@ Example:
 services:
   web:
     build: .
+    command: gunicorn --worker-class eventlet -w 1 --bind 0.0.0.0:5000 app:app
+    # for localhost access
+    extra_hosts:
+      - "host.docker.internal:host-gateway"
     ports:
       - "5000:5000"
+    volumes:
+      - .:/app
     environment:
-      - DB_HOST=your_external_db_host
+      - DB_HOST=host.docker.internal
       - DB_PORT=8086
-      - DB_USERNAME=your_username
-      - DB_PASSWORD=your_password
-      - DB_NAME=your_database
-      - BROKER_ADDRESS=your_external_broker_host
+      - DB_USERNAME=admin
+      - DB_PASSWORD=admin
+      - DB_NAME=sensors_db
+      - BROKER_ADDRESS=host.docker.internal
       - BROKER_PORT=1883
-      - CLIENT_ID=your_client_id
-      - CONTROL_TOPIC=control_topic
-      - SENSORS_TOPIC=sensors_topic
+      - CLIENT_ID=brisa-iot-web
+      - CONTROL_TOPIC=brisa-iot/control
+      - SENSOR_TOPIC=brisa-iot/sensors
 ```
 
 **Replace** `your_external_db_host` and `your_external_broker_host` with the actual addresses of your external services.
