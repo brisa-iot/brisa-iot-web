@@ -1,7 +1,6 @@
 services:
   web:
     build: .
-    # La nueva sección 'command' le indica a Docker cómo iniciar tu app
     command: gunicorn --worker-class eventlet -w 1 --bind 0.0.0.0:5000 app:app
     # for localhost access
     extra_hosts:

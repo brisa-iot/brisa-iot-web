@@ -110,9 +110,3 @@ The web application will be available at [http://localhost:5000](http://localhos
   ```sh
   docker compose logs web
   ```
-
----
-
-## License
-
-MIT License
