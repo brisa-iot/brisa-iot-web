@@ -107,6 +107,7 @@ The web application will be available at [http://localhost:5000](http://localhos
 
 - If the web server cannot connect to the database or broker, check your network settings and environment variables.
 - Logs can be viewed with:
+
   ```sh
   docker compose logs web
   ```
