@@ -222,7 +222,7 @@ class MQTTConnector:
             userdata: The private user data as set in Client() or userdata_set().
             msg: An instance of MQTTMessage.
         """
-        print(f"Received message: {msg.payload.decode()} on topic {msg.topic}")
+        # print(f"Received message: {msg.payload.decode()} on topic {msg.topic}")
         msg = json.loads(msg.payload.decode())
         self.socketio.emit("sensor_update", msg)
 
@@ -231,6 +231,7 @@ class MQTTConnector:
         Connect to the MQTT broker.
         """
         try:
+            print(f"Connecting to MQTT Broker at {self.broker_address}:{self.port}...")
             self.client.connect(self.broker_address, self.port)
         except Exception as e:
             print(f"Failed to connect to MQTT broker at {self.broker_address}:{self.port} - {e}")
@@ -262,9 +263,7 @@ class MQTTConnector:
         """
         Start the MQTT network loop in a background thread.
         """
-        t = threading.Thread(target=self.client.loop_forever)
-        t.daemon = True
-        t.start()
+        self.client.loop_start()
 
     def stop_loop(self):
         """

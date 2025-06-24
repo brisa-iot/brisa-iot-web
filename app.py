@@ -7,7 +7,7 @@ from param import (DB_HOST, DB_PORT, DB_USERNAME, DB_PASSWORD, DB_NAME, BROKER_A
 
 
 app = Flask(__name__)
-socketio = SocketIO(app, cors_allowed_origins="*")
+socketio = SocketIO(app, cors_allowed_origins="*", async_mode='threading')
 
 db_connector = InfluxDBConnector(
     host=DB_HOST,
@@ -160,7 +160,7 @@ def handle_connect():
 if __name__ == "__main__":
     try:
         mqtt_connector.loop()
-        socketio.run(app, debug=False, host="0.0.0.0", port=5000)
+        socketio.run(app, debug=False, host="0.0.0.0", port=5000, allow_unsafe_werkzeug=True)
     except KeyboardInterrupt:
         print("Exiting...")
         mqtt_connector.close()
