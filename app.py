@@ -137,7 +137,6 @@ def get_sensor_history(sensor):
         start=start,
         end=end
     )
-    print(node_id, sensor, start, end, data)
     if not data:
         return jsonify({'message': 'No data found for the given date range'}), 404
 

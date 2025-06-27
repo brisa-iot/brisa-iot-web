@@ -111,7 +111,7 @@ class InfluxDBConnector:
             query += f' AND time >= \'{start}\''
         if end:
             query += f' AND time <= \'{end}\''
-        query += ' ORDER BY time DESC LIMIT 1000'
+        query += ' ORDER BY time LIMIT 1000'
         result = self.query(query)
         return list(result.get_points())
 
