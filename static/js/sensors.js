@@ -14,7 +14,8 @@ const sensors = [
     "pH",
     "pressure",
     "temperature", 
-    "water_temperature"
+    "water_temperature",
+    "soc"
 ];
 
 const titles = {
@@ -27,7 +28,8 @@ const titles = {
     "pH": "pH Level",
     "pressure": "Pressure",
     "temperature": "Temperature",
-    "water_temperature": "Water Temperature"
+    "water_temperature": "Water Temperature",
+    "soc": "State of Charge",
 }
 
 const units = {
@@ -44,7 +46,8 @@ const units = {
     "pH": "pH",
     "pressure": "hPa",
     "temperature": "°C",
-    "water_temperature": "°C"
+    "water_temperature": "°C",
+    "soc": "%"
 }
 
 // Create a WebSocket connection
@@ -202,6 +205,29 @@ function showModal(sensor) {
                             plugins: {
                                 legend: {
                                     labels: { color: '#E0E0E0' }
+                                },
+                                zoom: {
+                                    zoom: {
+                                        wheel: {
+                                            enabled: true, // Enable zooming with mouse wheel
+                                        },
+                                        pinch: {
+                                            enabled: true // Enable zooming with pinch gesture
+                                        },
+                                        drag: {
+                                            enabled: true, // Enable zooming by dragging a selection box
+                                            modifierKey: 'ctrl', // Optional: require Ctrl key to drag-zoom
+                                        },
+                                        mode: 'xy', // Allow zooming both axes
+                                    },
+                                    pan: {
+                                        enabled: true,
+                                        mode: 'xy'
+                                    },
+                                    limits: {
+                                        x: { min: 'original', max: 'original' },
+                                        y: { min: 'original', max: 'original' }
+                                    }
                                 }
                             }
                         }
