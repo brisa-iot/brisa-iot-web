@@ -1,5 +1,32 @@
 {% extends "base.html" %}
 {% include "header.html" %}
 {% block content %}
-    
+<div class="content" style="margin-left: 15%; margin-right: 15%; font-size: 18px; line-height: 1.6; padding-top: 20px;">
+
+    <h2 style="font-size: 32px; margin-bottom: 30px;">Proyecto BRISA</h2>
+
+    <!-- Flex container to align image and text at the top -->
+    <div style="display: flex; flex-wrap: wrap; align-items: flex-start; gap: 40px;">
+
+        <!-- Image container -->
+        <div style="flex: 1; min-width: 280px; align-self: flex-start;">
+            <img src="{{ url_for('static', filename='img/png/boya.png') }}" alt="Foto del prototipo BRISA"
+                style="width:100%; max-width:600px; border-radius: 8px; box-shadow: 0 2px 8px rgba(0,0,0,0.2); vertical-align: top;">
+        </div>
+
+        <!-- Text container -->
+        <div style="flex: 2; min-width: 300px;">
+            <strong>BRISA</strong> (Boya inteRconectada e Inteligente de bajo coSto para Aplicaciones de Monitoreo Costero) es un proyecto desarrollado en la Escuela de Ingeniería de la Pontificia Universidad Católica de Chile, cuyo objetivo es diseñar, prototipar y validar una <strong>boya inteligente y autónoma</strong> capaz de medir variables ambientales críticas y transmitir estos datos en tiempo real.
+            <p>
+                La boya BRISA está equipada con sensores para monitorear parámetros del <strong>agua (pH, conductividad, temperatura, oxígeno disuelto)</strong>, del <strong>aire (temperatura, humedad, presión, viento)</strong>, así como un módulo <strong>GPS/GNSS</strong> y una unidad de medición inercial (<strong>IMU</strong>). Además, el sistema incorpora un módulo de comunicación <strong>LoRa</strong> que permite formar redes en malla para conectividad a largo alcance, ideal para entornos costeros remotos.
+            </p>
+            <p>
+                Gracias a su sistema de <strong>alimentación solar</strong> y a un diseño de bajo consumo energético, BRISA puede operar de forma completamente autónoma. Los datos recolectados se almacenan localmente y luego se transmiten a una <strong>base de datos web</strong>, desde donde pueden ser visualizados en tiempo real mediante una interfaz accesible desde cualquier navegador.
+            </p>
+            <p>
+                BRISA representa una solución tecnológica de bajo costo, abierta y escalable para el monitoreo ambiental marino, con potencial de aplicación en áreas como la conservación ecológica, la pesca sostenible y la prevención de desastres naturales.
+            </p>
+        </div>
+    </div>
+</div>
 {% endblock %}
