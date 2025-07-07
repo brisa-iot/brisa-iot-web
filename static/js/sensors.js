@@ -15,7 +15,8 @@ const sensors = [
     "pressure",
     "temperature", 
     "water_temperature",
-    "soc"
+    "soc",
+    "current"
 ];
 
 const titles = {
@@ -30,6 +31,7 @@ const titles = {
     "temperature": "Temperature",
     "water_temperature": "Water Temperature",
     "soc": "State of Charge",
+    "current": "Current",
 }
 
 const units = {
@@ -47,7 +49,8 @@ const units = {
     "pressure": "hPa",
     "temperature": "°C",
     "water_temperature": "°C",
-    "soc": "%"
+    "soc": "%",
+    "current": "A",
 }
 
 // Create a WebSocket connection
